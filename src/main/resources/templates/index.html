@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Main page</title>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<h1>Offers from around the world</h1>
+			</div>
+			
+			<div class="col" sec:authorize="isAnonymous()">
+				<a th:href="@{/login}" class="btn btn-secondary float-right">Login</a>
+			</div>
+			
+			<div class="col" sec:authorize="isAuthenticated()">
+				<a th:href="@{/addOffer}" class="btn btn-primary">Add</a>
+				<a th:href="@{/logout}" class="btn btn-secondary float-right">Logout</a>
+			</div>
+		</div>
+		
+		<div class="row">
+			<table class="table table-hover" th:if="${!offersDTO.empty}">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Code</th>
+						<th scope="col">Name</th>
+						<th scope="col">Duration</th>
+						<th scope="col">Source</th>
+						<th sec:authorize="isAuthenticated()" scope="col">Edit</th>
+						<th sec:authorize="isAuthenticated()" scope="col">Remove</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="offerDTO : ${offersDTO}">
+						<td th:text="${offerDTOStat.count}"></td>					
+						<td th:text="${offerDTO.code}"></td>
+						<td th:text="${offerDTO.name}"></td>
+						<td th:text="${offerDTO.duration}"></td>
+						<td th:text="${offerDTO.source}"></td>
+						<td sec:authorize="isAuthenticated()"><a class="btn btn-primary" th:if="${offerDTO.id} &gt; 0" th:href="@{/editOffer/} + ${offerDTO.id}">Edit</a></td>
+						<td sec:authorize="isAuthenticated()"><a class="btn btn-danger" th:if="${offerDTO.id} &gt; 0" th:href="@{/deleteOffer/} + ${offerDTO.id}">Delete</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="row" th:if="${offersDTO.empty}">
+			<h3>No tours in the offer</h3>
+		</div>
+	</div>
+</body>
+</html>
